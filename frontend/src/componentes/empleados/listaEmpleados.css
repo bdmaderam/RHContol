@@ -1,0 +1,51 @@
+
+.card-lista {
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+}
+
+.card-lista-title {
+  color: #2c3e50; 
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+}
+
+.table-custom {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table-custom th {
+  background: #3498db; 
+  color: white;
+  padding: 12px;
+  text-align: left;
+}
+
+.table-custom td {
+  padding: 12px;
+  border-bottom: 1px solid #ecf0f1;
+}
+
+.table-custom tr:hover {
+  background: #f8f9fa;
+}
+
+.btn-action {
+  padding: 6px 12px;
+  margin-right: 8px;
+  border-radius: 4px;
+  font-size: 0.875rem;
+}
+
+.btn-edit {
+  background: #3498db; 
+  color: white;
+}
+
+.btn-delete {
+  background: #e74c3c;
+  color: white;
+}
