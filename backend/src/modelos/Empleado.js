@@ -1,24 +1,18 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../database/db');
 
-const Empleados = sequelize.define('Empleados', {
-  name: {
-    type: DataTypes.STRING,
-    allowNull: false
-  },
-  price: {
-    type: DataTypes.FLOAT,
-    allowNull: false
-  },
-  description: {
-    type: DataTypes.TEXT
-  },
-  stock: {
-    type: DataTypes.INTEGER,
-    defaultValue: 0
-  }
-}, {
-  timestamps: true
-});
-
-module.exports = Empleados;
+module.exports = (sequelize, DataTypes) => {
+  const Empleado = sequelize.define('Empleado', {
+    nombre: DataTypes.STRING,
+    cedula: DataTypes.STRING,          
+    telefono: DataTypes.STRING,
+    email: { type: DataTypes.STRING, allowNull: false, unique: true },
+    direccion: DataTypes.STRING,
+    cargo: DataTypes.STRING,
+    salario: DataTypes.FLOAT,         
+    fechaContratacion: DataTypes.DATE,
+    tipoContrato: DataTypes.STRING    
+  });
+  Empleado.associate = models => {
+    Empleado.hasMany(models.Anotacion); 
+  };
+  return Empleado;
+};

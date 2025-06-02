@@ -1,4 +1,7 @@
 {
+  
+  "type": "commonjs",
+
   "name": "rhcontrol",
   "version": "1.0.0",
   "main": "index.js",
@@ -18,4 +21,5 @@
   "devDependencies": {
     "nodemon": "^3.1.10"
   }
+  
 }

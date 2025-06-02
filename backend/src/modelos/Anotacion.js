@@ -1,24 +1,14 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../database/db');
 
-const Anotaciones = sequelize.define('Anotaciones', {
-  name: {
-    type: DataTypes.STRING,
-    allowNull: false
-  },
-  price: {
-    type: DataTypes.FLOAT,
-    allowNull: false
-  },
-  description: {
-    type: DataTypes.TEXT
-  },
-  stock: {
-    type: DataTypes.INTEGER,
-    defaultValue: 0
-  }
-}, {
-  timestamps: true
-});
-
-module.exports = Anotaciones;
+module.exports = (sequelize, DataTypes) => {
+  const Anotacion = sequelize.define('Anotacion', {
+    titulo: DataTypes.STRING,
+    descripcion: DataTypes.TEXT,
+    fecha: DataTypes.DATE,
+    tipo: DataTypes.STRING,
+    severidad: { type: DataTypes.STRING, allowNull: true }
+  });
+  Anotacion.associate = models => {
+    Anotacion.belongsTo(models.Empleado);
+  };
+  return Anotacion;
+};
