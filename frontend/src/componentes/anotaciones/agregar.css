@@ -1,0 +1,141 @@
+/* Contenedor principal */
+.agregar-anotacion-container {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Título */
+.agregar-anotacion-container h1 {
+  font-size: 2rem;
+  color: #2d3748;
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+  border-bottom: 2px solid #ebf4ff;
+  padding-bottom: 0.5rem;
+  text-align: center;
+}
+
+/* Formulario */
+.anotacion-form {
+  display: grid;
+  gap: 1.5rem;
+}
+
+/* Grupos de campos */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group label {
+  font-size: 0.95rem;
+  color: #4a5568;
+  font-weight: 500;
+}
+
+.form-group input,
+.form-group textarea {
+  padding: 0.75rem 1rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  background-color: #f8fafc;
+  width: 100%;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.form-group textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+/* Mensajes */
+.error-message {
+  color: #e53e3e;
+  background-color: #fff5f5;
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid #fed7d7;
+  margin: 0.5rem 0;
+}
+
+.success-message {
+  color: #38a169;
+  background-color: #f0fff4;
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid #c6f6d5;
+  margin: 0.5rem 0;
+}
+
+/* Botones */
+.form-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.submit-button {
+  padding: 0.75rem 1.5rem;
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex: 1;
+}
+
+.submit-button:hover {
+  background-color: #1d4ed8;
+  transform: translateY(-2px);
+}
+
+.cancel-button {
+  padding: 0.75rem 1.5rem;
+  background-color: #e2e8f0;
+  color: #2d3748;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex: 1;
+}
+
+.cancel-button:hover {
+  background-color: #cbd5e0;
+  transform: translateY(-2px);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .agregar-anotacion-container {
+    padding: 1.5rem;
+    margin: 1rem;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+  }
+  
+  .submit-button,
+  .cancel-button {
+    width: 100%;
+  }
+}

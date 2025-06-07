@@ -1,197 +1,153 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import './AgregarEmpleado.css';
-
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { useParams, useNavigate } from 'react-router-dom';
 
 const EditarEmpleado = () => {
-  const [empleado, setEmpleado] = useState({
-    nombres: '',
-    apellidos: '',
-    tipoDocumento: 'CC',
-    numeroDocumento: '',
-    fechaNacimiento: '',
-    cargo: '',
-    salario: '',
-    dependencia: '',
-    tieneCuenta: false,
-    esTemporal: false
-  });
+    const { cedula: empleadoCedula } = useParams();
+    const navigate = useNavigate();
 
-  const [errores, setErrores] = useState([]);
-  const navigate = useNavigate();
-
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setEmpleado({
-      ...empleado,
-      [name]: type === 'checkbox' ? checked : value
+    const [empleado, setEmpleado] = useState({
+        nombre: '',
+        apellido: '',
+        cedula: '',
+        cargo: '',
+        salario: '',
+        activo: false // <-- Nuevo campo, estado inicial false
     });
-  };
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const nuevosErrores = validarCampos();
-    if (nuevosErrores.length > 0) {
-      setErrores(nuevosErrores);
-      return;
+    useEffect(() => {
+        const fetchEmpleado = async () => {
+            try {
+                const response = await axios.get(`/api/empleados/${empleadoCedula}`);
+                // Asegúrate de que activo sea un booleano para el checkbox
+                setEmpleado({
+                    ...response.data,
+                    activo: response.data.activo === 1 ? true : false // Convierte 1/0 a true/false
+                });
+                setLoading(false);
+            } catch (err) {
+                console.error('Error al cargar datos del empleado:', err.response ? err.response.data : err.message);
+                setError('No se pudo cargar el empleado. Asegúrate que la cédula sea correcta.');
+                setLoading(false);
+            }
+        };
+
+        fetchEmpleado();
+    }, [empleadoCedula]);
+
+    const handleChange = (e) => {
+        const { name, value, type, checked } = e.target;
+        setEmpleado(prevState => ({
+            ...prevState,
+            // Si es un checkbox, usa 'checked', de lo contrario usa 'value'
+            [name]: type === 'checkbox' ? checked : value
+        }));
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const datosAActualizar = {
+                nombre: empleado.nombre,
+                apellido: empleado.apellido,
+                cargo: empleado.cargo,
+                salario: empleado.salario,
+                activo: empleado.activo ? 1 : 0 // <-- Convierte true/false a 1/0 para la DB
+            };
+
+            const response = await axios.put(`/api/empleados/${empleadoCedula}`, datosAActualizar);
+            console.log('Empleado actualizado:', response.data);
+            alert('Empleado actualizado exitosamente!');
+            navigate('/empleados');
+        } catch (err) {
+            console.error('Error al actualizar empleado:', err.response ? err.response.data : err.message);
+            alert(`Error al actualizar empleado: ${err.response ? err.response.data.message : err.message}`);
+        }
+    };
+
+    if (loading) {
+        return <p>Cargando datos del empleado...</p>;
     }
-    // Lógica para guardar el empleado
-    navigate('/editar-empleado/1', { state: { mensaje: 'Empleado actualizado exitosamente' } });
-  };
 
-  const validarCampos = () => {
-    const errores = [];
-    if (!empleado.nombres.trim()) errores.push('Nombres son requeridos');
-    if (!empleado.apellidos.trim()) errores.push('Apellidos son requeridos');
-    if (!empleado.numeroDocumento.trim()) errores.push('Número de documento es requerido');
-    if (!empleado.cargo.trim()) errores.push('Cargo es requerido');
-    return errores;
-  };
+    if (error) {
+        return <p style={{ color: 'red' }}>{error}</p>;
+    }   
 
-  return (
-    <div className="formulario-container">
-      <div className="formulario-header">
-        <button onClick={() => navigate(-1)} className="btn-regresar">
-         
-        </button>
-        <h1>
-    
-          Editar Nuevo Empleado
-        </h1>
-      </div>
+    return (
+        <div className="editar-empleado-container">
+            <h2>Editar Empleado</h2>
+            <form onSubmit={handleSubmit} className="editar-empleado-form">
+                <div className="form-group">
+                    <label>Cédula:</label>
+                    <input
+                        type="text"
+                        name="cedula"
+                        value={empleado.cedula}
+                        onChange={handleChange}
+                        disabled
+                    />
+                </div>
+                <div className="form-group">
+                    <label>Nombre:</label>
+                    <input
+                        type="text"
+                        name="nombre"
+                        value={empleado.nombre}
+                        onChange={handleChange}
+                        required
+                    />
+                </div>
+                <div className="form-group">
+                    <label>Apellido:</label>
+                    <input
+                        type="text"
+                        name="apellido"
+                        value={empleado.apellido}
+                        onChange={handleChange}
+                        required
+                    />
+                </div>
+                <div className="form-group">
+                    <label>Cargo:</label>
+                    <input
+                        type="text"
+                        name="cargo"
+                        value={empleado.cargo || ''}
+                        onChange={handleChange}
+                    />
+                </div>
+                <div className="form-group">
+                    <label>Salario:</label>
+                    <input
+                        type="number"
+                        name="salario"
+                        value={empleado.salario || ''}
+                        onChange={handleChange}
+                    />
+                </div>
+                <div className="form-group">
+                    <label>Activo:</label>
+                    <input
+                     type="checkbox"
+                        name="activo"
+                        value={empleado.activo}
+                         onChange={handleChange}
+                    />
+                </div>
+                <div className="form-actions">
 
-      {errores.length > 0 && (
-        <div className="errores-container">
-          {errores.map((error, index) => (
-            <p key={index} className="error-message">⚠️ {error}</p>
-          ))}
+                    <button type="submit" className="submit-btn">
+                        Guardar Cambios
+                    </button>
+                    <button type="button" onClick={() => navigate('/empleados')} className="submit-btn">
+                        Cancelar
+                    </button>
+                </div>
+            </form>
         </div>
-      )}
-
-      <form onSubmit={handleSubmit} className="empleado-form">
-        <div className="form-columns">
-          <div className="form-column">
-            <div className="form-group">
-              <label>Nombres y Apellidos*</label>
-              <div className="input-group">
-                <input
-                  type="text"
-                  name="nombres"
-                  value={empleado.nombres}
-                  onChange={handleChange}
-                  placeholder="Nombres"
-                  required
-                />
-                <input
-                  type="text"
-                  name="apellidos"
-                  value={empleado.apellidos}
-                  onChange={handleChange}
-                  placeholder="Apellidos"
-                  required
-                />
-              </div>
-            </div>
-
-            <div className="form-group">
-              <label>Fecha de Nacimiento</label>
-              <input
-                type="date"
-                name="fechaNacimiento"
-                value={empleado.fechaNacimiento}
-                onChange={handleChange}
-              />
-            </div>
-
-            <div className="form-group">
-              <label>Número de Documento*</label>
-              <div className="doc-group">
-                <select
-                  name="tipoDocumento"
-                  value={empleado.tipoDocumento}
-                  onChange={handleChange}
-                >
-                  <option value="CC">C.C.</option>
-                  <option value="CE">C.E.</option>
-                  <option value="PA">Pasaporte</option>
-                </select>
-                <input
-                  type="text"
-                  name="numeroDocumento"
-                  value={empleado.numeroDocumento}
-                  onChange={handleChange}
-                  placeholder="Número"
-                  required
-                />
-              </div>
-            </div>
-          </div>
-
-          <div className="form-column">
-            <div className="form-group">
-              <label>Cargo*</label>
-              <input
-                type="text"
-                name="cargo"
-                value={empleado.cargo}
-                onChange={handleChange}
-                required
-              />
-            </div>
-
-            <div className="form-group">
-              <label>Sueldo</label>
-              <input
-                type="number"
-                name="salario"
-                value={empleado.salario}
-                onChange={handleChange}
-                placeholder="$"
-              />
-            </div>
-
-            <div className="form-group">
-              <label>Dependencia</label>
-              <input
-                type="text"
-                name="dependencia"
-                value={empleado.dependencia}
-                onChange={handleChange}
-              />
-            </div>
-
-            <div className="checkbox-group">
-              <label className="checkbox-label">
-                <input
-                  type="checkbox"
-                  name="tieneCuenta"
-                  checked={empleado.tieneCuenta}
-                  onChange={handleChange}
-                />
-                <span>Tiene cuenta bancaria</span>
-              </label>
-
-              <label className="checkbox-label">
-                <input
-                  type="checkbox"
-                  name="esTemporal"
-                  checked={empleado.esTemporal}
-                  onChange={handleChange}
-                />
-                <span>Ingreso por Temporal</span>
-              </label>
-            </div>
-          </div>
-        </div>
-
-        <div className="form-footer">
-          <button type="submit" className="btn-guardar">
-            Guardar Empleado
-          </button>
-        </div>
-      </form>
-    </div>
-  );
+    );
 };
 
 export default EditarEmpleado;

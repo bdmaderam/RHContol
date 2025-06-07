@@ -1,135 +1,84 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { Link } from 'react-router-dom';
+import './listaEmpleados.css';
 import { useNavigate } from 'react-router-dom';
-import Alerta from '../ui/Alerta';
-import FiltroEmpleados from './FiltroEmpleados';
 
 const ListaEmpleados = () => {
-  const [empleados, setEmpleados] = useState([]);
-  const [cargando, setCargando] = useState(true);
-  const [errores, setErrores] = useState([]);
-  const [filtros, setFiltros] = useState({
-    documento: '',
-    nombre: '',
-    activos: true
-  });
-  const navigate = useNavigate();
+    const navigate = useNavigate();
+    const [empleados, setEmpleados] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-  // Simulación de carga de datos
-  useEffect(() => {
-    const cargarEmpleados = async () => {
-      try {
-        // Aquí iría la llamada real a la API
-        // const respuesta = await empleadoServicio.obtenerEmpleados(filtros);
+    useEffect(() => {
+        const fetchEmpleados = async () => {
+            try {
+                const response = await axios.get('/api/empleados');
+                setEmpleados(response.data);
+                setLoading(false);
+            } catch (err) {
+                console.error('Error al obtener la lista de empleados:', err.response ? err.response.data : err.message);
+                setError('No se pudo cargar la lista de empleados. Inténtalo de nuevo más tarde.');
+                setLoading(false);
+            }
+        };
+
+        fetchEmpleados();
+    }, []);
+
+    if (loading) {
+        return <p className="loading-message">Cargando empleados...</p>;
+    }
+
+    if (error) {
+        return <p className="error-message">{error}</p>;
+    }
+
+    return (
+        <div className="lista-empleados-container">
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <h2>Lista de Empleados</h2>
+                <Link to="/empleados/nuevo" className="add-employee-btn">
+                    Agregar Empleado
+                </Link>
+            </div>
+            
+            {empleados.length === 0 ? (
+                <p className="empty-message">No hay empleados registrados todavía.</p>
+            ) : (
+                <table className="empleados-table">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Apellido</th>
+                            <th>Cédula</th>
+                            <th>Cargo</th>
+                            <th>Salario</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {empleados.map(empleado => (
+                            <tr key={empleado.cedula}>
+                                <td>{empleado.nombre}</td>
+                                <td>{empleado.apellido}</td>
+                                <td>{empleado.cedula}</td>
+                                <td>{empleado.cargo || 'N/A'}</td>
+                                <td>{empleado.salario && !isNaN(empleado.salario) ? `$${Number(empleado.salario).toFixed(2)}` : 'N/A'}</td>
+                                <td>
+                                    <Link to={`/empleados/editar/${empleado.cedula}`}>
+                                        <button className="action-btn">Editar</button>
+                                    </Link>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            )}
+             <button className="submit-btn" type="button" onClick={() => navigate('/Panel')} > Volver </button> 
+        </div>
         
-        // Datos de ejemplo
-        const datosEjemplo = [
-          {
-            id: 1,
-            nombres: 'Juan',
-            apellidos: 'Pérez',
-            tipoDocumento: 'CC',
-            numeroDocumento: '123456789',
-            cargo: 'Desarrollador',
-            activo: true
-          },
-          {
-            id: 2,
-            nombres: 'María',
-            apellidos: 'Gómez',
-            tipoDocumento: 'CC',
-            numeroDocumento: '987654321',
-            cargo: 'Diseñadora',
-            activo: true
-          }
-        ];
-        
-        setEmpleados(datosEjemplo);
-      } catch (error) {
-        setErrores(['Error al cargar los empleados']);
-      } finally {
-        setCargando(false);
-      }
-    };
-
-    cargarEmpleados();
-  }, [filtros]);
-
-  const manejarFiltroChange = (nuevosFiltros) => {
-    setFiltros(nuevosFiltros);
-  };
-
-  const verDetalle = (id) => {
-    navigate(`/empleados/${id}`);
-  };
-
-  const editarEmpleado = (id) => {
-    navigate(`/empleados/editar/${id}`);
-  };
-
-  const agregarAnotacion = (id) => {
-    navigate(`/empleados/${id}/anotaciones/nueva`);
-  };
-
-  if (cargando) {
-    return <div className="text-center py-8">Cargando empleados...</div>;
-  }
-
-  return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold mb-6">Listado de Empleados</h1>
-      
-      {errores.length > 0 && (
-        <Alerta tipo="error" mensajes={errores} onCerrar={() => setErrores([])} />
-      )}
-
-      <div className="mb-6">
-        <FiltroEmpleados filtros={filtros} onChange={manejarFiltroChange} />
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {empleados.length > 0 ? (
-          empleados.map((empleado) => (
-           
-              <div className="p-4">
-                <h3 className="font-bold text-lg">
-                  {empleado.nombres} {empleado.apellidos}
-                </h3>
-                <p className="text-gray-600">
-                  {empleado.tipoDocumento}: {empleado.numeroDocumento}
-                </p>
-                <p className="text-gray-800">{empleado.cargo}</p>
-                
-                <div className="mt-4 flex space-x-2">
-                  <button
-                    onClick={() => verDetalle(empleado.id)}
-                    className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm"
-                  >
-                    Ver
-                  </button>
-                  <button
-                    onClick={() => editarEmpleado(empleado.id)}
-                    className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded text-sm"
-                  >
-                    Editar
-                  </button>
-                  <button
-                    onClick={() => agregarAnotacion(empleado.id)}
-                    className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-sm"
-                  >
-                    Anotación
-                  </button>
-                </div>
-              </div>
-           
-          ))
-        ) : (
-          <div className="col-span-full text-center py-8">
-            No se encontraron empleados
-          </div>
-        )}
-      </div>
-    </div>
-  );
+    );
 };
 
 export default ListaEmpleados;

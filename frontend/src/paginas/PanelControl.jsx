@@ -29,7 +29,7 @@ const PanelControl = () => {
           <span>Consultar Empleado</span>
         </button>
         
-        <button className="accion-card" onClick={() => navigate('/editar-empleado/1')}>
+        <button className="accion-card" onClick={() => navigate('/empleados/buscar-editar')}>
           <div className="accion-icono">✏️</div>
           <span>Editar Empleado</span>
         </button>

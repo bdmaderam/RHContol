@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Alerta from '../ui/Alerta';
+import './lista.css';
 
 const ListaAnotaciones = ({ empleadoId }) => {
   const [anotaciones, setAnotaciones] = useState([]);
@@ -15,15 +16,15 @@ const ListaAnotaciones = ({ empleadoId }) => {
             id: 1,
             tipo: 'Llamado de atención',
             fecha: '2023-05-10',
-            descripcion: 'Llegada tardía repetida',
+            descripcion: 'Llegada tardía repetida sin justificación válida',
             creadoPor: 'Admin'
           },
           {
             id: 2,
             tipo: 'Reconocimiento',
             fecha: '2023-04-15',
-            descripcion: 'Excelente desempeño en el proyecto X',
-            creadoPor: 'Gerente'
+            descripcion: 'Excelente desempeño en el proyecto X, entregando resultados antes del plazo',
+            creadoPor: 'Gerente de Proyecto'
           }
         ];
         
@@ -39,50 +40,59 @@ const ListaAnotaciones = ({ empleadoId }) => {
   }, [empleadoId]);
 
   const formatearFecha = (fecha) => {
-    return new Date(fecha).toLocaleDateString('es-ES');
+    return new Date(fecha).toLocaleDateString('es-ES', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    });
+  };
+
+  const getBadgeClass = (tipo) => {
+    switch(tipo.toLowerCase()) {
+      case 'llamado de atención':
+        return 'badge badge-llamado';
+      case 'reconocimiento':
+        return 'badge badge-reconocimiento';
+      default:
+        return 'badge badge-general';
+    }
   };
 
   if (cargando) {
-    return <div className="text-center py-4">Cargando anotaciones...</div>;
+    return <div className="loading-message">Cargando anotaciones...</div>;
   }
 
   return (
-    <div className="bg-white shadow-md rounded-lg overflow-hidden">
+    <div className="lista-anotaciones-container">
       {errores.length > 0 && (
         <Alerta tipo="error" mensajes={errores} onCerrar={() => setErrores([])} />
       )}
 
       {anotaciones.length > 0 ? (
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
+        <table className="anotaciones-table">
+          <thead className="table-header">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Tipo
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Fecha
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Descripción
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Registrado por
-              </th>
+              <th>Tipo</th>
+              <th>Fecha</th>
+              <th>Descripción</th>
+              <th>Registrado por</th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
+          <tbody>
             {anotaciones.map((anotacion) => (
-              <tr key={anotacion.id}>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                  {anotacion.tipo}
+              <tr key={anotacion.id} className="table-row">
+                <td className="tipo-cell">
+                  <span className={getBadgeClass(anotacion.tipo)}>
+                    {anotacion.tipo}
+                  </span>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <td className="fecha-cell">
                   {formatearFecha(anotacion.fecha)}
                 </td>
-                <td className="px-6 py-4 text-sm text-gray-500">
+                <td className="descripcion-cell">
                   {anotacion.descripcion}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <td className="creado-por-cell">
                   {anotacion.creadoPor}
                 </td>
               </tr>
@@ -90,7 +100,7 @@ const ListaAnotaciones = ({ empleadoId }) => {
           </tbody>
         </table>
       ) : (
-        <div className="text-center py-8 text-gray-500">
+        <div className="empty-message">
           No se encontraron anotaciones para este empleado
         </div>
       )}

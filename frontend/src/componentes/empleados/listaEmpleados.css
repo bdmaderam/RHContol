@@ -1,51 +1,119 @@
-
-.card-lista {
-  background: #ffffff;
-  border-radius: 10px;
+/* Contenedor principal */
+.lista-empleados-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  background-color: #ffffff;
+  border-radius: 12px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  padding: 20px;
 }
 
-.card-lista-title {
-  color: #2c3e50; 
-  font-size: 1.5rem;
-  margin-bottom: 20px;
+/* Título */
+.lista-empleados-container h2 {
+  font-size: 1.8rem;
+  color: #2d3748;
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+  border-bottom: 2px solid #ebf4ff;
+  padding-bottom: 0.5rem;
 }
 
-.table-custom {
+/* Tabla */
+.empleados-table {
   width: 100%;
   border-collapse: collapse;
+  margin-top: 1rem;
 }
 
-.table-custom th {
-  background: #3498db; 
-  color: white;
-  padding: 12px;
+.empleados-table thead {
+  background-color: #f8fafc;
+}
+
+.empleados-table th {
+  padding: 1rem;
   text-align: left;
+  color: #4a5568;
+  font-weight: 600;
+  border-bottom: 2px solid #e2e8f0;
 }
 
-.table-custom td {
-  padding: 12px;
-  border-bottom: 1px solid #ecf0f1;
+.empleados-table td {
+  padding: 1rem;
+  border-bottom: 1px solid #edf2f7;
+  color: #4a5568;
 }
 
-.table-custom tr:hover {
-  background: #f8f9fa;
+.empleados-table tr:hover {
+  background-color: #f8fafc;
 }
 
-.btn-action {
-  padding: 6px 12px;
-  margin-right: 8px;
-  border-radius: 4px;
-  font-size: 0.875rem;
-}
-
-.btn-edit {
-  background: #3498db; 
+/* Botones de acción */
+.action-btn {
+  padding: 0.5rem 1rem;
+  background-color: #2563eb;
   color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
 }
 
-.btn-delete {
-  background: #e74c3c;
+.action-btn:hover {
+  background-color: #1d4ed8;
+  transform: translateY(-1px);
+}
+
+/* Mensajes de estado */
+.loading-message, .empty-message {
+  text-align: center;
+  padding: 2rem;
+  color: #4a5568;
+}
+
+.error-message {
+  color: #e53e3e;
+  text-align: center;
+  padding: 2rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .lista-empleados-container {
+    padding: 1rem;
+    overflow-x: auto;
+  }
+  
+  .empleados-table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+  
+  .empleados-table th, 
+  .empleados-table td {
+    padding: 0.75rem 0.5rem;
+  }
+  
+  .action-btn {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
+  }
+}
+
+/* Estilos para el botón de agregar */
+.add-employee-btn {
+  display: inline-block;
+  margin-bottom: 1.5rem;
+  padding: 0.75rem 1.5rem;
+  background-color: #1d4ed8;
   color: white;
+  text-decoration: none;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.add-employee-btn:hover {
+  background-color: #1d4ed8;
+  transform: translateY(-1px);
 }

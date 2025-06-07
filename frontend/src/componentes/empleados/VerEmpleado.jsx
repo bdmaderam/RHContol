@@ -82,7 +82,7 @@ const VerEmpleado = () => {
         </h1>
         <div className="flex space-x-2">
           <button
-            onClick={() => navigate(`/empleados/editar/${id}`)}
+            onClick={() => navigate(`/empleados/editar/${empleado.cedula}`)}
             className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded"
           >
             Editar

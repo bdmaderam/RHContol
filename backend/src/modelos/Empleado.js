@@ -1,18 +1,28 @@
+import axios from 'axios';
 
-module.exports = (sequelize, DataTypes) => {
-  const Empleado = sequelize.define('Empleado', {
-    nombre: DataTypes.STRING,
-    cedula: DataTypes.STRING,          
-    telefono: DataTypes.STRING,
-    email: { type: DataTypes.STRING, allowNull: false, unique: true },
-    direccion: DataTypes.STRING,
-    cargo: DataTypes.STRING,
-    salario: DataTypes.FLOAT,         
-    fechaContratacion: DataTypes.DATE,
-    tipoContrato: DataTypes.STRING    
-  });
-  Empleado.associate = models => {
-    Empleado.hasMany(models.Anotacion); 
-  };
-  return Empleado;
+const API = axios.create({
+  baseURL: 'http://localhost:5000/api',
+  headers: {
+    'Content-Type': 'application/json'
+  }
+});
+
+export const fetchEmpleados = async () => {
+  try {
+    const response = await API.get('/empleados');
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching empleados:', error);
+    throw error;
+  }
+};
+
+export const addEmpleado = async (empleadoData) => {
+  try {
+    const response = await API.post('/empleados', empleadoData);
+    return response.data;
+  } catch (error) {
+    console.error('Error adding empleado:', error);
+    throw error;
+  }
 };

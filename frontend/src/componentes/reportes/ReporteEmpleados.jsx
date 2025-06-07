@@ -1,93 +1,54 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Alerta from '../ui/Alerta';
-import FiltroReportes from './FiltroReportes';
 import { generarPDF, generarExcel } from '../../utilidades/generadorReportes';
 
 const ReporteEmpleados = () => {
   const [empleados, setEmpleados] = useState([]);
   const [cargando, setCargando] = useState(true);
   const [errores, setErrores] = useState([]);
-  const [filtros, setFiltros] = useState({
-    estado: 'activos',
-    departamento: '',
-    fechaDesde: '',
-    fechaHasta: ''
-  });
   const navigate = useNavigate();
+  const API_BASE_URL = 'http://localhost:3001';
 
-  // Simular carga de datos
-  useEffect(() => {
-    const cargarDatos = async () => {
-      try {
-        // Simulación de datos - en producción sería una llamada a la API
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        const datosEjemplo = [
-          {
-            id: 1,
-            nombreCompleto: 'Juan Pérez',
-            documento: '123456789',
-            cargo: 'Desarrollador',
-            departamento: 'TI',
-            fechaIngreso: '2020-05-15',
-            salario: 5000000,
-            estado: 'Activo'
-          },
-          {
-            id: 2,
-            nombreCompleto: 'María Gómez',
-            documento: '987654321',
-            cargo: 'Diseñadora',
-            departamento: 'Marketing',
-            fechaIngreso: '2019-11-20',
-            salario: 4500000,
-            estado: 'Activo'
-          },
-          {
-            id: 3,
-            nombreCompleto: 'Carlos Rodríguez',
-            documento: '456789123',
-            cargo: 'Gerente',
-            departamento: 'Administración',
-            fechaIngreso: '2018-03-10',
-            salario: 8000000,
-            estado: 'Inactivo'
-          }
-        ];
+  const fetchEmpleados = async () => {
+    setCargando(true);
+    setErrores([]);
 
-        // Aplicar filtros simulados
-        let datosFiltrados = datosEjemplo;
-        if (filtros.estado === 'activos') {
-          datosFiltrados = datosFiltrados.filter(e => e.estado === 'Activo');
-        } else if (filtros.estado === 'inactivos') {
-          datosFiltrados = datosFiltrados.filter(e => e.estado === 'Inactivo');
-        }
+    try {
+      const url = `${API_BASE_URL}/api/empleados`;
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
 
-        if (filtros.departamento) {
-          datosFiltrados = datosFiltrados.filter(e => 
-            e.departamento.toLowerCase().includes(filtros.departamento.toLowerCase())
-          );
-        }
-
-        setEmpleados(datosFiltrados);
-      } catch (error) {
-        setErrores(['Error al cargar los datos de empleados']);
-      } finally {
-        setCargando(false);
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Error al cargar los empleados del servidor.');
       }
-    };
 
-    cargarDatos();
-  }, [filtros]);
+      const data = await response.json();
+      setEmpleados(data);
+    } catch (error) {
+      console.error('Error fetching employees:', error);
+      setErrores([error.message || 'Error de conexión con el servidor.']);
+    } finally {
+      setCargando(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchEmpleados();
+  }, []);
 
   const manejarGenerarReporte = (formato) => {
     switch(formato) {
       case 'pdf':
-        generarPDF(empleados, 'reporte_empleados');
+        generarPDF(empleados, 'reporte_empleados_todos');
         break;
       case 'excel':
-        generarExcel(empleados, 'reporte_empleados');
+        generarExcel(empleados, 'reporte_empleados_todos');
         break;
       default:
         break;
@@ -95,10 +56,12 @@ const ReporteEmpleados = () => {
   };
 
   const formatearFecha = (fecha) => {
+    if (!fecha) return '';
     return new Date(fecha).toLocaleDateString('es-ES');
   };
 
   const formatearMoneda = (valor) => {
+    if (typeof valor !== 'number') return '';
     return new Intl.NumberFormat('es-CO', {
       style: 'currency',
       currency: 'COP'
@@ -107,82 +70,63 @@ const ReporteEmpleados = () => {
 
   if (cargando) {
     return (
-      <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      <div className="loading-spinner">
+        <div className="spinner"></div>
       </div>
     );
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold mb-6">Reporte de Empleados</h1>
+    <div className="reporte-empleados-container">
+      <h1 className="reporte-title">Reporte Completo de Empleados</h1>
       
       {errores.length > 0 && (
         <Alerta tipo="error" mensajes={errores} onCerrar={() => setErrores([])} />
       )}
 
-      <div className="mb-6">
-        <FiltroReportes 
-          filtros={filtros}
-          onChange={setFiltros}
-          onGenerarReporte={manejarGenerarReporte}
-        />
+      <div className="export-buttons">
+        <button
+          onClick={() => manejarGenerarReporte('pdf')}
+          className="export-button pdf-button"
+        >
+          Generar PDF
+        </button>
+        <button
+          onClick={() => manejarGenerarReporte('excel')}
+          className="export-button excel-button"
+        >
+          Generar Excel
+        </button>
       </div>
 
-      <div className="bg-white shadow-md rounded-lg overflow-hidden">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
+      <div className="table-container">
+        <table className="empleados-table">
+          <thead className="table-header">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Nombre
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Documento
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Cargo
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Departamento
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Fecha Ingreso
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Salario
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Estado
-              </th>
+              <th>Nombre</th>
+              <th>Documento</th>
+              <th>Cargo</th>
+              <th>Departamento</th>
+              <th>Fecha Ingreso</th>
+              <th>Salario</th>
+              <th>Estado</th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
+          <tbody>
             {empleados.length > 0 ? (
               empleados.map((empleado) => (
-                <tr key={empleado.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                    {empleado.nombreCompleto}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {empleado.documento}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {empleado.cargo}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {empleado.departamento}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {formatearFecha(empleado.fechaIngreso)}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {formatearMoneda(empleado.salario)}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                <tr key={empleado.id} className="table-row">
+                  <td>{empleado.nombreCompleto}</td>
+                  <td>{empleado.documento}</td>
+                  <td>{empleado.cargo}</td>
+                  <td>{empleado.departamento}</td>
+                  <td>{formatearFecha(empleado.fechaIngreso)}</td>
+                  <td>{formatearMoneda(empleado.salario)}</td>
+                  <td>
+                    <span className={`estado-badge ${
                       empleado.estado === 'Activo' 
-                        ? 'bg-green-100 text-green-800' 
-                        : 'bg-red-100 text-red-800'
+                        ? 'estado-activo' 
+                        : 'estado-inactivo'
                     }`}>
                       {empleado.estado}
                     </span>
@@ -191,8 +135,8 @@ const ReporteEmpleados = () => {
               ))
             ) : (
               <tr>
-                <td colSpan="7" className="px-6 py-4 text-center text-sm text-gray-500">
-                  No se encontraron empleados con los filtros seleccionados
+                <td colSpan="7" className="empty-message">
+                  No se encontraron empleados.
                 </td>
               </tr>
             )}
@@ -200,13 +144,13 @@ const ReporteEmpleados = () => {
         </table>
       </div>
 
-      <div className="mt-4 flex justify-between items-center">
-        <div className="text-sm text-gray-500">
+      <div className="table-footer">
+        <div>
           Mostrando <span className="font-medium">{empleados.length}</span> resultados
         </div>
         <button
           onClick={() => navigate('/reportes/anotaciones')}
-          className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded text-sm"
+          className="anotaciones-button"
         >
           Ver Reporte de Anotaciones
         </button>

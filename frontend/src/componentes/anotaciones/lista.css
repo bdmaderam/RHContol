@@ -1,0 +1,150 @@
+/* Contenedor principal */
+.lista-anotaciones-container {
+  max-width: 100%;
+  margin: 1.5rem 0;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+}
+
+/* Tabla */
+.anotaciones-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Cabecera de tabla */
+.table-header {
+  background-color: #f8f9fa;
+}
+
+.table-header th {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #4a5568;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+/* Filas de tabla */
+.table-row {
+  transition: background-color 0.2s ease;
+}
+
+.table-row:hover {
+  background-color: #f8fafc;
+}
+
+.table-row td {
+  padding: 1rem;
+  font-size: 0.875rem;
+  color: #4a5568;
+  border-bottom: 1px solid #edf2f7;
+}
+
+/* Celdas específicas */
+.tipo-cell {
+  font-weight: 500;
+  color: #2d3748;
+}
+
+.fecha-cell {
+  white-space: nowrap;
+  color: #718096;
+}
+
+.descripcion-cell {
+  max-width: 300px;
+  line-height: 1.5;
+}
+
+.creado-por-cell {
+  font-style: italic;
+  color: #718096;
+}
+
+/* Badges para tipos de anotación */
+.badge {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.badge-llamado {
+  background-color: #fff5f5;
+  color: #e53e3e;
+  border: 1px solid #fed7d7;
+}
+
+.badge-reconocimiento {
+  background-color: #f0fff4;
+  color: #38a169;
+  border: 1px solid #c6f6d5;
+}
+
+.badge-general {
+  background-color: #ebf8ff;
+  color: #3182ce;
+  border: 1px solid #bee3f8;
+}
+
+/* Mensajes de estado */
+.loading-message {
+  padding: 2rem;
+  text-align: center;
+  color: #718096;
+  font-size: 0.875rem;
+}
+
+.empty-message {
+  padding: 2rem;
+  text-align: center;
+  color: #a0aec0;
+  font-style: italic;
+  font-size: 0.875rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .lista-anotaciones-container {
+    border-radius: 0;
+    box-shadow: none;
+    border: 1px solid #e2e8f0;
+  }
+  
+  .table-header th,
+  .table-row td {
+    padding: 0.75rem;
+    font-size: 0.8125rem;
+  }
+  
+  .table-header th:nth-child(3),
+  .table-row td:nth-child(3) {
+    max-width: 200px;
+  }
+}
+
+@media (max-width: 640px) {
+  .table-header th,
+  .table-row td {
+    padding: 0.5rem;
+    font-size: 0.75rem;
+  }
+  
+  .descripcion-cell {
+    max-width: 150px;
+  }
+  
+  .badge {
+    font-size: 0.6875rem;
+    padding: 0.2rem 0.4rem;
+  }
+}

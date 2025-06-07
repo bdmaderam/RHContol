@@ -1,148 +1,113 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import Alerta from '../ui/Alerta';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import './agregar.css';
 
 const AgregarAnotacion = () => {
-  const { empleadoId } = useParams();
   const navigate = useNavigate();
-  const [errores, setErrores] = useState([]);
-  const [empleado, setEmpleado] = useState(null);
-  const [anotacion, setAnotacion] = useState({
-    tipo: 'Llamado de atención',
-    descripcion: '',
-    fecha: new Date().toISOString().split('T')[0] // Fecha actual
-  });
+  const [empleadoId, setEmpleadoId] = useState('');
+  const [titulo, setTitulo] = useState('');
+  const [descripcion, setDescripcion] = useState('');
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+  const API_BASE_URL = 'http://localhost:3001';
 
-  // Cargar datos básicos del empleado
-  useEffect(() => {
-    const cargarEmpleado = async () => {
-      try {
-        // Simulación de datos - en producción sería una llamada a la API
-        const datosEjemplo = {
-          id: empleadoId,
-          nombres: 'Juan',
-          apellidos: 'Pérez',
-          numeroDocumento: '123456789'
-        };
-        setEmpleado(datosEjemplo);
-      } catch (error) {
-        setErrores(['Error al cargar datos del empleado']);
-      }
-    };
-
-    cargarEmpleado();
-  }, [empleadoId]);
-
-  const manejarCambio = (e) => {
-    const { name, value } = e.target;
-    setAnotacion({
-      ...anotacion,
-      [name]: value
-    });
-  };
-
-  const manejarEnvio = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    // Validación
-    const nuevosErrores = [];
-    if (!anotacion.descripcion.trim()) {
-      nuevosErrores.push('La descripción es requerida');
-    }
-    
-    if (nuevosErrores.length > 0) {
-      setErrores(nuevosErrores);
+    setError('');
+    setSuccess('');
+
+    if (!empleadoId || !titulo || !descripcion) {
+      setError('Todos los campos son obligatorios.');
       return;
-    }
+    } 
 
     try {
-      // Aquí iría la llamada a la API para guardar
-      // await anotacionServicio.crearAnotacion(empleadoId, anotacion);
-      
-      // Simulación de éxito
-      navigate(`/empleados/${empleadoId}`, { 
-        state: { mensaje: 'Anotación agregada correctamente' } 
+      const response = await fetch(`${API_BASE_URL}/api/anotaciones`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          empleadoId,
+          titulo,
+          descripcion,
+        }),
       });
-    } catch (error) {
-      setErrores(['Error al guardar la anotación']);
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Error al agregar la anotación.');
+      }
+
+      const data = await response.json();
+      setSuccess('Anotación agregada exitosamente!');
+      console.log('Anotación agregada:', data);
+
+      // Limpiar formulario
+      setEmpleadoId('');
+      setTitulo('');
+      setDescripcion('');
+
+    } catch (err) {
+      console.error('Error al enviar la anotación:', err);
+      setError(err.message || 'Hubo un problema al conectar con el servidor.');
     }
   };
 
-  if (!empleado) {
-    return <div className="text-center py-8">Cargando datos del empleado...</div>;
-  }
-
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold mb-6">
-        Agregar Anotación a {empleado.nombres} {empleado.apellidos}
-      </h1>
-      <p className="mb-4">Documento: {empleado.numeroDocumento}</p>
-
-      {errores.length > 0 && (
-        <Alerta tipo="error" mensajes={errores} onCerrar={() => setErrores([])} />
-      )}
-
-      <form onSubmit={manejarEnvio} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-        <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2">
-            Tipo de Anotación*
-          </label>
-          <select
-            name="tipo"
-            value={anotacion.tipo}
-            onChange={manejarCambio}
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          >
-            <option value="Llamado de atención">Llamado de atención</option>
-            <option value="Suspensión">Suspensión</option>
-            <option value="Reconocimiento">Reconocimiento</option>
-            <option value="Otro">Otro</option>
-          </select>
-        </div>
-
-        <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2">
-            Fecha*
-          </label>
+    <div className="agregar-anotacion-container">
+      <h1>Agregar Nueva Anotación</h1>
+      
+      <form onSubmit={handleSubmit} className="anotacion-form">
+        <div className="form-group">
+          <label htmlFor="empleadoId">ID del Empleado:</label>
           <input
-            type="date"
-            name="fecha"
-            value={anotacion.fecha}
-            onChange={manejarCambio}
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            type="text"
+            id="empleadoId"
+            value={empleadoId}
+            onChange={(e) => setEmpleadoId(e.target.value)}
+            placeholder="Ej: 12345"
             required
           />
         </div>
 
-        <div className="mb-6">
-          <label className="block text-gray-700 text-sm font-bold mb-2">
-            Descripción*
-          </label>
+        <div className="form-group">
+          <label htmlFor="titulo">Título de la Anotación:</label>
+          <input
+            type="text"
+            id="titulo"
+            value={titulo}
+            onChange={(e) => setTitulo(e.target.value)}
+            placeholder="Breve resumen de la anotación"
+            required
+          />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="descripcion">Descripción:</label>
           <textarea
-            name="descripcion"
-            value={anotacion.descripcion}
-            onChange={manejarCambio}
+            id="descripcion"
+            value={descripcion}
+            onChange={(e) => setDescripcion(e.target.value)}
+            placeholder="Detalles completos de la anotación"
             rows="5"
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            placeholder="Detalles de la anotación..."
             required
-          />
+          ></textarea>
         </div>
 
-        <div className="flex items-center justify-between">
-          <button
-            type="button"
-            onClick={() => navigate(`/empleados/${empleadoId}`)}
-            className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-          >
-            Cancelar
+        {error && <div className="error-message">{error}</div>}
+        {success && <div className="success-message">{success}</div>}
+
+        <div className="form-actions">
+          <button type="submit" className="submit-button">
+            Guardar Anotación
           </button>
           <button
-            type="submit"
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            type="button"
+            className="cancel-button"
+            onClick={() => navigate(-1)}
           >
-            Guardar Anotación
+            Cancelar
           </button>
         </div>
       </form>
