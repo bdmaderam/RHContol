@@ -11,20 +11,22 @@ const PanelControl = () => {
       <header className="panel-header">
         <div className="usuario-info">
         
-          <div>
-            <h1>NOMBRE USUARIO</h1>
-            <p>Lorem ipsum dolor sit amet consectetur adipiscing elit duis senectus urna...</p>
+          <div className='titulo'>
+            <h1>RHCONTROL</h1>
+            <p>BIENVENIDO DE NUEVO
+            </p>
           </div>
         </div>
       </header>
-
+      <h2><span className="reporte-icono"></span>💻 ACCIONES</h2>
+<p>¿Que quieres hacer hoy?</p><br /><br />
       <section className="panel-acciones">
         <button className="accion-card" onClick={() => navigate('/empleados/nuevo')}>
           <div className="accion-icono">👥</div>
           <span>Agregar Empleado</span>
         </button>
         
-        <button className="accion-card" onClick={() => navigate('/empleados')}>
+        <button className="accion-card" onClick={() => navigate('/empleado-consulta')}>
           <div className="accion-icono">🔍</div>
           <span>Consultar Empleado</span>
         </button>
@@ -42,8 +44,8 @@ const PanelControl = () => {
 
       <section className="panel-reportes">
         <div className="reportes-header">
-          <h2><span className="reporte-icono">📊</span> Todos los Empleados</h2>
-          <h3>Empleados Activos</h3>
+          <h2><span className="reporte-icono">📊</span> REPORTES</h2>
+          <h3>Genera y revisa los reportes</h3>
         </div>
         
         <div className="reportes-grid">
@@ -55,7 +57,7 @@ const PanelControl = () => {
             <div className="reporte-badge">15 nuevas</div>
           </div>
           
-          <div className="reporte-card" onClick={() => navigate('/reportes/empleados')}>
+          <div className="reporte-card" onClick={() => navigate('/empleados')}>
             <div className="reporte-content">
               <span className="reporte-emoji">👨‍💼</span>
               <span>Reporte completo</span>

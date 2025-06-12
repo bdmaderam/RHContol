@@ -4,7 +4,7 @@ import axios from 'axios';
 
 import './Buscar.css';
 
-const BuscarEmpleadoParaEditar = () => {
+const BuscarEmpleadoParaConsulta = () => {
     const [cedula, setCedula] = useState('');
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -28,7 +28,7 @@ const BuscarEmpleadoParaEditar = () => {
 
         try {
             const response = await axios.get(`/api/empleados/${cedula.trim()}`);
-            navigate(`/empleados/editar/${cedula.trim()}`);
+            navigate(`/empleados/Consulta/${cedula.trim()}`);
         } catch (err) {
             if (err.response && err.response.status === 404) {
                 setError(`El empleado con cédula "${cedula.trim()}" no fue encontrado.`);
@@ -43,7 +43,7 @@ const BuscarEmpleadoParaEditar = () => {
 
     return (
         <div className="buscar-empleado-container">
-             <header className="panel-header">
+                      <header className="panel-header">
         <div className="usuario-info">
         
           <div className='titulo'>
@@ -52,13 +52,13 @@ const BuscarEmpleadoParaEditar = () => {
           </div>
         </div>
       </header>
-
+     
             
-            <h2>Buscar Empleado para Editar</h2>
+            <h2>Buscar Empleado para Consulta</h2>
             
             <form onSubmit={handleSubmit} className="buscar-empleado-form">
                 <div className="form-group">
-                    <label htmlFor="cedulaBusqueda">Ingresa la Cédula del Empleado a Editar:</label>
+                    <label htmlFor="cedulaBusqueda">Ingresa la Cédula del Empleado a Consulta:</label>
                     <input
                         type="text"
                         id="cedulaBusqueda"
@@ -75,10 +75,10 @@ const BuscarEmpleadoParaEditar = () => {
                         className="search-btn"
                         disabled={loading}
                     >
-                        {loading ? 'Buscando...' : 'Buscar y Editar'}
+                        {loading ? 'Buscando...' : 'Buscar y Consulta'}
                     </button>
                 </div>
-                <button className="submit-btn" type="button" onClick={() => navigate('/Panel')} > Volver </button>
+                  <button className="submit-btn" type="button" onClick={() => navigate('/Panel')} > Volver </button>
             </form>
 
             {error && (
@@ -97,6 +97,7 @@ const BuscarEmpleadoParaEditar = () => {
                         >
                             Ver Lista de Empleados
                         </button>
+                      
                     </div>
                 </div>
             )}
@@ -104,4 +105,4 @@ const BuscarEmpleadoParaEditar = () => {
     );
 };
 
-export default BuscarEmpleadoParaEditar;
+export default BuscarEmpleadoParaConsulta;

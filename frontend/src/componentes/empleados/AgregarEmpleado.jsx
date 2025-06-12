@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios'; // Importa axios
+import axios from 'axios'; 
 import './AgregarEmpleado.css';
 import { useNavigate } from 'react-router-dom';
 
@@ -25,10 +25,10 @@ const AgregarEmpleado = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('http://localhost:5000/api/empleados', empleado); // Asegúrate que el puerto coincida con tu backend
+            const response = await axios.post('http://localhost:5000/api/empleados', empleado); 
             console.log('Empleado agregado:', response.data);
             alert('Empleado agregado exitosamente!');
-            // Opcional: limpiar el formulario después de un envío exitoso
+           
             setEmpleado({
                 nombre: '',
                 apellido: '',
@@ -44,7 +44,17 @@ const AgregarEmpleado = () => {
     };
 
 return (
+  
   <div className="agregar-empleado-container">
+          <header className="panel-header">
+        <div className="usuario-info">
+        
+          <div className='titulo'>
+            <h1>RHCONTROL</h1><br /><br />
+
+          </div>
+        </div>
+      </header>
     <h2>Agregar Nuevo Empleado</h2>
     <form onSubmit={handleSubmit} className="agregar-empleado-form">
       <div className="form-group">
