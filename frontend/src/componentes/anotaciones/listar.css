@@ -1,0 +1,135 @@
+/* Contenedor principal */
+.lista-anotaciones-container {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  background-color: #ffffff;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Título */
+.lista-anotaciones-container h2 {
+  font-size: 1.75rem;
+  color: #2d3748;
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+  border-bottom: 2px solid #ebf4ff;
+  padding-bottom: 0.5rem;
+}
+
+/* Grid de anotaciones */
+.anotaciones-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin: 1.5rem 0;
+}
+
+/* Tarjeta de anotación */
+.anotacion-card {
+  border: 1px solid #e2e8f0;
+  border-radius: 0.5rem;
+  padding: 1.25rem;
+  background-color: #ffffff;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.anotacion-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-color: #cbd5e0;
+}
+
+/* Contenido de la tarjeta */
+.anotacion-card p {
+  margin: 0.5rem 0;
+  color: #4a5568;
+  line-height: 1.5;
+}
+
+.anotacion-card strong {
+  color: #2d3748;
+  font-weight: 500;
+}
+
+/* Fecha */
+.anotacion-fecha {
+  font-size: 0.875rem;
+  color: #718096;
+  margin-bottom: 0.75rem;
+}
+
+/* Contenido */
+.anotacion-contenido {
+  padding: 0.75rem 0;
+  border-top: 1px solid #edf2f7;
+  margin-top: 0.75rem;
+}
+
+/* Mensajes de estado */
+.loading-message {
+  text-align: center;
+  padding: 2rem;
+  color: #4a5568;
+}
+
+.error-message {
+  color: #e53e3e;
+  background-color: #fff5f5;
+  padding: 1rem;
+  border-radius: 0.375rem;
+  margin: 1rem 0;
+}
+
+.empty-message {
+  text-align: center;
+  padding: 2rem;
+  color: #a0aec0;
+  font-style: italic;
+}
+
+/* Botones */
+.volver-button {
+  background-color: #e2e8f0;
+  color: #2d3748;
+  border: none;
+  border-radius: 0.375rem;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+}
+
+.volver-button:hover {
+  background-color: #cbd5e0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .lista-anotaciones-container {
+    padding: 1rem;
+    margin: 1rem;
+  }
+  
+  .anotaciones-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .anotacion-card {
+    padding: 1rem;
+  }
+  
+  .volver-button {
+    width: 100%;
+    justify-content: center;
+  }
+}
