@@ -77,6 +77,15 @@ const EditarEmpleado = () => {
 
     return (
         <div className="editar-empleado-container">
+                      <header className="panel-header">
+        <div className="usuario-info">
+        
+          <div className='titulo'>
+            <h1>RHCONTROL</h1><br /><br />
+
+          </div>
+        </div>
+      </header>
             <h2>Editar Empleado</h2>
             <form onSubmit={handleSubmit} className="editar-empleado-form">
                 <div className="form-group">

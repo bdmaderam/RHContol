@@ -101,6 +101,7 @@ return (
         <input
           type="number"
           name="salario"
+          min="0"
           value={empleado.salario}
           onChange={handleChange}
         />

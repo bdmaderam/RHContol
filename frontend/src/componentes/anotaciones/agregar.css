@@ -8,16 +8,6 @@
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-/* Título */
-.agregar-anotacion-container h1 {
-  font-size: 2rem;
-  color: #2d3748;
-  margin-bottom: 1.5rem;
-  font-weight: 600;
-  border-bottom: 2px solid #ebf4ff;
-  padding-bottom: 0.5rem;
-  text-align: center;
-}
 
 /* Formulario */
 .anotacion-form {

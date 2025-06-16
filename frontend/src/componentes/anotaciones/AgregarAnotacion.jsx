@@ -1,102 +1,86 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './agregar.css';
+import axios from 'axios'; // Usaremos axios en lugar de fetch para consistencia y manejo de errores
+import './agregar.css'; // Asegúrate que este archivo CSS existe
 
 const AgregarAnotacion = () => {
   const navigate = useNavigate();
-  const [empleadoId, setEmpleadoId] = useState('');
-  const [titulo, setTitulo] = useState('');
-  const [descripcion, setDescripcion] = useState('');
+  const [empleadoCedula, setEmpleadoCedula] = useState(''); // Cambiado de empleadoId
+  const [contenido, setContenido] = useState(''); // Cambiado de titulo y descripcion
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  const API_BASE_URL = 'http://localhost:3001';
+  // const API_BASE_URL = 'http://localhost:5000'; // No necesario si usas el proxy en package.json
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setSuccess('');
 
-    if (!empleadoId || !titulo || !descripcion) {
-      setError('Todos los campos son obligatorios.');
+    if (!empleadoCedula || !contenido) { // Validar ambos campos
+      setError('Cédula del empleado y contenido de la anotación son obligatorios.');
       return;
-    } 
+    }
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/anotaciones`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          empleadoId,
-          titulo,
-          descripcion,
-        }),
+      const response = await axios.post('/api/anotaciones', { // Usar axios y la ruta /api
+        empleado_cedula: empleadoCedula, // Usar empleado_cedula como en el backend
+        contenido: contenido, // Usar 'contenido'
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Error al agregar la anotación.');
-      }
-
-      const data = await response.json();
       setSuccess('Anotación agregada exitosamente!');
-      console.log('Anotación agregada:', data);
+      console.log('Anotación agregada:', response.data);
 
       // Limpiar formulario
-      setEmpleadoId('');
-      setTitulo('');
-      setDescripcion('');
+      setEmpleadoCedula('');
+      setContenido('');
 
     } catch (err) {
       console.error('Error al enviar la anotación:', err);
-      setError(err.message || 'Hubo un problema al conectar con el servidor.');
+      // Mejor manejo de errores de axios
+      setError(err.response ? err.response.data.message : 'Hubo un problema al conectar con el servidor.');
     }
   };
 
   return (
     <div className="agregar-anotacion-container">
+                <header className="panel-header">
+        <div className="usuario-info">
+        
+          <div className='titulo'>
+            <h1>RHCONTROL</h1><br /><br />
+
+          </div>
+        </div>
+      </header>
       <h1>Agregar Nueva Anotación</h1>
-      
+
       <form onSubmit={handleSubmit} className="anotacion-form">
         <div className="form-group">
-          <label htmlFor="empleadoId">ID del Empleado:</label>
+          <label htmlFor="empleadoCedula">Cédula del Empleado:</label>
           <input
             type="text"
-            id="empleadoId"
-            value={empleadoId}
-            onChange={(e) => setEmpleadoId(e.target.value)}
-            placeholder="Ej: 12345"
+            id="empleadoCedula"
+            value={empleadoCedula}
+            onChange={(e) => setEmpleadoCedula(e.target.value)}
+            placeholder="Cédula del empleado"
             required
           />
         </div>
 
         <div className="form-group">
-          <label htmlFor="titulo">Título de la Anotación:</label>
-          <input
-            type="text"
-            id="titulo"
-            value={titulo}
-            onChange={(e) => setTitulo(e.target.value)}
-            placeholder="Breve resumen de la anotación"
-            required
-          />
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="descripcion">Descripción:</label>
+          <label htmlFor="contenido">Contenido de la Anotación:</label>
           <textarea
-            id="descripcion"
-            value={descripcion}
-            onChange={(e) => setDescripcion(e.target.value)}
+            id="contenido"
+            value={contenido}
+            onChange={(e) => setContenido(e.target.value)}
             placeholder="Detalles completos de la anotación"
             rows="5"
             required
           ></textarea>
         </div>
 
-        {error && <div className="error-message">{error}</div>}
-        {success && <div className="success-message">{success}</div>}
+        {error && <div className="error-message" style={{color: 'red', marginTop: '10px'}}>{error}</div>}
+        {success && <div className="success-message" style={{color: 'green', marginTop: '10px'}}>{success}</div>}
 
         <div className="form-actions">
           <button type="submit" className="submit-button">
@@ -105,7 +89,7 @@ const AgregarAnotacion = () => {
           <button
             type="button"
             className="cancel-button"
-            onClick={() => navigate(-1)}
+            onClick={() => navigate(-1)} // Vuelve a la página anterior
           >
             Cancelar
           </button>

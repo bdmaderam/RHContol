@@ -64,6 +64,15 @@ const ListaAnotaciones = ({ empleadoId }) => {
 
   return (
     <div className="lista-anotaciones-container">
+                <header className="panel-header">
+        <div className="usuario-info">
+        
+          <div className='titulo'>
+            <h1>RHCONTROL</h1><br /><br />
+
+          </div>
+        </div>
+      </header>
       {errores.length > 0 && (
         <Alerta tipo="error" mensajes={errores} onCerrar={() => setErrores([])} />
       )}

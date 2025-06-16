@@ -9,7 +9,7 @@ import EditarEmpleados from './componentes/empleados/EditarEmpleado';
 import AgregarEmpleado from './componentes/empleados/AgregarEmpleado';
 import AgregarAnotacion from './componentes/anotaciones/AgregarAnotacion';
 import ReporteEmpleados from './componentes/reportes/ReporteEmpleados';
-import ReporteAnotaciones from './componentes/anotaciones/ListaAnotaciones';
+import ReporteAnotaciones from './componentes/reportes/ReporteAnotaciones';
 import BuscarEmpleadoParaEditar from './componentes/empleados/BuscarEmpleadoParaEditar';
 
 function App() {

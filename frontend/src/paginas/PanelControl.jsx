@@ -45,7 +45,7 @@ const PanelControl = () => {
       <section className="panel-reportes">
         <div className="reportes-header">
           <h2><span className="reporte-icono">📊</span> REPORTES</h2>
-          <h3>Genera y revisa los reportes</h3>
+          <h3>Genera y revisa los reportes</h3> 
         </div>
         
         <div className="reportes-grid">
@@ -54,7 +54,7 @@ const PanelControl = () => {
               <span className="reporte-emoji">📑</span>
               <span>Reporte de Anotaciones</span>
             </div>
-            <div className="reporte-badge">15 nuevas</div>
+
           </div>
           
           <div className="reporte-card" onClick={() => navigate('/empleados')}>
@@ -62,7 +62,7 @@ const PanelControl = () => {
               <span className="reporte-emoji">👨‍💼</span>
               <span>Reporte completo</span>
             </div>
-            <div className="reporte-badge">124 empleados</div>
+
           </div>
         </div>
       </section>

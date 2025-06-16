@@ -7,6 +7,15 @@ const UltimasAnotaciones = ({ anotaciones }) => {
   if (anotaciones.length === 0) {
     return (
       <div className="text-center py-8 text-gray-500">
+                  <header className="panel-header">
+        <div className="usuario-info">
+        
+          <div className='titulo'>
+            <h1>RHCONTROL</h1><br /><br />
+
+          </div>
+        </div>
+      </header>
         No hay anotaciones recientes
       </div>
     );

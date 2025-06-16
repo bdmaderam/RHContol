@@ -64,6 +64,15 @@ const VerEmpleado = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
+                <header className="panel-header">
+        <div className="usuario-info">
+        
+          <div className='titulo'>
+            <h1>RHCONTROL</h1><br /><br />
+
+          </div>
+        </div>
+      </header>
       {mensajeExito && (
         <Alerta 
           tipo="exito" 

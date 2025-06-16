@@ -36,6 +36,15 @@ const ListaEmpleados = () => {
 
     return (
         <div className="lista-empleados-container">
+                      <header className="panel-header">
+        <div className="usuario-info">
+        
+          <div className='titulo'>
+            <h1>RHCONTROL</h1><br /><br />
+
+          </div>
+        </div>
+      </header>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <h2>Lista de Empleados</h2>
                 <Link to="/empleados/nuevo" className="add-employee-btn">

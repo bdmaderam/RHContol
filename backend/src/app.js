@@ -1,22 +1,31 @@
+// backend/src/app.js
 const express = require('express');
 const cors = require('cors');
+require('./configuracion/baseDeDatos'); // Para asegurar que la base de datos se inicializa
+
 const empleadoRoutes = require('./rutas/empleadoRutas');
+const anotacionRoutes = require('./rutas/anotacionRutas'); // <-- Importa las nuevas rutas
 
 const app = express();
-const PORT = process.env.PORT || 5000; // Puedes usar el puerto que quieras, 5000 es común para backends.
+const PORT = process.env.PORT || 5000;
 
-// Middleware para habilitar CORS
+// Middleware
 app.use(cors());
+app.use(express.json()); // Para parsear el body de las peticiones en JSON
 
-// Middleware para parsear el cuerpo de las solicitudes JSON
-app.use(express.json());
+// Rutas
+app.use('/api', empleadoRoutes); // Prefijo /api para rutas de empleados
+app.use('/api', anotacionRoutes); // <-- Prefijo /api para rutas de anotaciones
 
-// Usar las rutas de empleados
-app.use('/api', empleadoRoutes); // Todas las rutas de empleados empezarán con /api
+// Manejo de rutas no encontradas (404)
+app.use((req, res, next) => {
+    res.status(404).send('Ruta no encontrada');
+});
 
-// Ruta de prueba
-app.get('/', (req, res) => {
-    res.send('Backend de RHControl funcionando!');
+// Manejador de errores global
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).send('Algo salió mal en el servidor!');
 });
 
 app.listen(PORT, () => {

@@ -70,6 +70,15 @@ const ConsultarEmpleado = () => {
 
     return (
         <div className="Consultar-empleado-container">
+                      <header className="panel-header">
+        <div className="usuario-info">
+        
+          <div className='titulo'>
+            <h1>RHCONTROL</h1><br /><br />
+
+          </div>
+        </div>
+      </header>
             <h2>Consultar Empleado</h2>
             <form onSubmit={handleSubmit} className="Consultar-empleado-form">
                 <div className="form-group">
